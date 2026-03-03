@@ -7,12 +7,13 @@ interface NavbarProps {
 }
 
 const NAV_LINKS = [
-  { label: 'Home',       href: '#intro'    },
-  { label: 'About',      href: '#about'    },
-  { label: 'Experience', href: '#timeline' },
-  { label: 'Skills',     href: '#techstack'},
-  { label: 'Projects',   href: '#projects' },
-  { label: 'Contact',    href: '#contact'  },
+  { label: 'Home',       href: '#intro'      },
+  { label: 'About',      href: '#about'      },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Education',  href: '#education'  },
+  { label: 'Skills',     href: '#techstack'  },
+  { label: 'Projects',   href: '#projects'   },
+  { label: 'Contact',    href: '#contact'    },
 ]
 
 export default function Navbar({ activeSection }: NavbarProps) {
@@ -40,7 +41,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
     <nav
       role="navigation"
       aria-label="Main navigation"
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
       style={
         scrolled
           ? {
@@ -90,13 +91,14 @@ export default function Navbar({ activeSection }: NavbarProps) {
                 <button
                   onClick={() => scrollTo(href)}
                   aria-current={isActive ? 'page' : undefined}
-                  className="relative px-3 py-2 rounded text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+                  className="relative px-3 py-2 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
                   style={{ color: isActive ? '#3df0c2' : 'var(--color-text-secondary)' }}
                 >
                   {label}
                   {isActive && (
                     <motion.span
                       layoutId="nav-underline"
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                       className="absolute bottom-0 left-2 right-2 h-px rounded-full"
                       style={{
                         background: 'linear-gradient(90deg, #3df0c2, #8b5cf6)',

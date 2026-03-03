@@ -2,7 +2,8 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { GraduationCap, Briefcase } from 'lucide-react'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+const spring = { type: 'spring' as const, stiffness: 220, damping: 22 }
+
 interface TimelineEntry {
   id: string
   type: 'education' | 'work'
@@ -26,8 +27,7 @@ const ENTRIES: TimelineEntry[] = [
       'Teaching assistant for Data Structures & Algorithms',
       'Led the university ACM chapter and organized two hackathons',
     ],
-    coursework:
-      'Data Structures, Algorithms, Operating Systems, Databases, Computer Networks, Software Engineering',
+    coursework: 'Data Structures, Algorithms, Operating Systems, Databases, Computer Networks, Software Engineering',
   },
   {
     id: 'edu-2',
@@ -70,87 +70,74 @@ const ENTRIES: TimelineEntry[] = [
   },
 ]
 
-// ─── Sub-component: single timeline card ─────────────────────────────────────
+const bulletContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.15 } },
+}
+const bulletItem = {
+  hidden:  { opacity: 0, x: -12 },
+  visible: { opacity: 1, x: 0, transition: spring },
+}
+
 function TimelineCard({ entry, index }: { entry: TimelineEntry; index: number }) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 })
-  const isLeft = index % 2 === 0
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.12 })
 
-  const Icon = entry.type === 'education' ? GraduationCap : Briefcase
-
-  const badgeStyle =
-    entry.type === 'education'
-      ? {
-          background: 'rgba(139,92,246,0.12)',
-          color: '#8b5cf6',
-          border: '1px solid rgba(139,92,246,0.3)',
-        }
-      : {
-          background: 'rgba(61,240,194,0.1)',
-          color: '#3df0c2',
-          border: '1px solid rgba(61,240,194,0.25)',
-        }
+  const isEducation = entry.type === 'education'
+  const accentColor  = isEducation ? '#8b5cf6' : '#3df0c2'
+  const accentGlow   = isEducation ? 'rgba(139,92,246,0.25)' : 'rgba(61,240,194,0.25)'
+  const borderColor  = isEducation ? 'rgba(139,92,246,0.55)' : 'rgba(61,240,194,0.55)'
 
   return (
-    <div ref={ref} className="relative flex md:justify-center mb-10 last:mb-0">
-      {/* Glowing dot */}
-      <div
-        className="absolute top-5 left-4 md:left-1/2 md:-translate-x-1/2 w-3.5 h-3.5 rounded-full z-10"
-        style={{
-          background: '#3df0c2',
-          border: '2px solid #06090f',
-          boxShadow: '0 0 12px rgba(61,240,194,0.7), 0 0 4px rgba(61,240,194,0.5)',
-        }}
-      />
-
-      {/* Card */}
-      <motion.div
-        initial={{ opacity: 0, x: isLeft ? 40 : -40 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className={[
-          'glass-panel iridescent-border ml-12 md:ml-0 md:w-[46%] rounded-xl p-5 shadow-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(61,240,194,0.08)]',
-          isLeft ? 'md:mr-auto md:text-right' : 'md:ml-auto',
-        ].join(' ')}
-      >
-        {/* Badge + icon */}
-        <div
-          className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full mb-3"
-          style={badgeStyle}
-        >
-          <Icon size={12} aria-hidden="true" />
-          {entry.type === 'education' ? 'Education' : 'Experience'}
-        </div>
-
-        <h3 className="text-[var(--color-text-primary)] font-semibold text-base leading-snug">
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ ...spring, delay: index * 0.08 }}
+      className="glass-panel rounded-xl overflow-hidden"
+      style={{
+        borderLeft: `3px solid ${borderColor}`,
+        boxShadow: inView ? `0 0 0 0 ${accentGlow}` : undefined,
+      }}
+    >
+      {/* Card inner */}
+      <div className="p-5">
+        <h3 className="text-[var(--color-text-primary)] font-semibold text-sm leading-snug mb-1">
           {entry.role}
         </h3>
-        <p className="font-medium text-sm mt-0.5" style={{ color: '#38bdf8' }}>
+        <p className="font-medium text-sm" style={{ color: accentColor }}>
           {entry.institution}
         </p>
-        <p className="text-[var(--color-text-muted)] text-xs mt-1 mb-3">
+        <p className="text-[var(--color-text-muted)] text-xs mt-1 mb-4">
           {entry.period} · {entry.location}
         </p>
 
-        <ul className={`space-y-1.5 ${isLeft ? 'md:text-right' : ''}`} aria-label="Details">
+        <motion.ul
+          variants={bulletContainer}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          className="space-y-1.5"
+          aria-label="Details"
+        >
           {entry.description.map((point, i) => (
-            <li
+            <motion.li
               key={i}
-              className={`flex gap-2 text-sm text-[var(--color-text-secondary)] ${isLeft ? 'md:flex-row-reverse' : ''}`}
+              variants={bulletItem}
+              className="flex gap-2 text-sm text-[var(--color-text-secondary)]"
             >
               <span
                 className="mt-1.5 shrink-0 rounded-full"
                 aria-hidden="true"
                 style={{
-                  width: '5px',
-                  height: '5px',
-                  background: '#3df0c2',
-                  boxShadow: '0 0 4px rgba(61,240,194,0.5)',
+                  width: '4px', height: '4px',
+                  background: accentColor,
+                  boxShadow: `0 0 4px ${accentGlow}`,
+                  flexShrink: 0,
                 }}
               />
               {point}
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
 
         {entry.coursework && (
           <p className="mt-3 text-xs text-[var(--color-text-muted)] italic leading-relaxed">
@@ -158,43 +145,122 @@ function TimelineCard({ entry, index }: { entry: TimelineEntry; index: number })
             {entry.coursework}
           </p>
         )}
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   )
 }
 
-// ─── Main section ─────────────────────────────────────────────────────────────
-export default function Timeline() {
+function ColumnHeader({
+  icon: Icon,
+  label,
+  color,
+  tint,
+  inView,
+  delay,
+}: {
+  icon: typeof GraduationCap
+  label: string
+  color: string
+  tint: string
+  inView: boolean
+  delay: number
+}) {
   return (
-    <section id="timeline" aria-labelledby="timeline-heading" className="py-24 px-6">
-      <div className="max-w-4xl mx-auto">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ ...spring, delay }}
+      className="flex items-center gap-3 mb-6 pb-4"
+      style={{ borderBottom: `1px solid ${tint}` }}
+    >
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+        style={{ background: tint.replace('0.15', '0.12') }}
+      >
+        <Icon size={17} style={{ color }} aria-hidden="true" />
+      </div>
+      <span className="font-display font-bold text-lg" style={{ color }}>
+        {label}
+      </span>
+    </motion.div>
+  )
+}
+
+const educationEntries = ENTRIES.filter(e => e.type === 'education')
+const workEntries      = ENTRIES.filter(e => e.type === 'work')
+
+export default function Timeline() {
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.04 })
+
+  return (
+    <section id="timeline" ref={ref} aria-labelledby="timeline-heading" className="py-24 px-6">
+      <div className="max-w-5xl mx-auto">
 
         {/* Heading */}
-        <div className="text-center mb-14">
-          <h2
-            id="timeline-heading"
-            className="font-display text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
-          >
-            Education &amp; Experience
-          </h2>
-          <div className="aurora-bar" aria-hidden="true" />
-        </div>
-
-        {/* Timeline container */}
-        <div className="relative">
-          {/* Vertical glowing line — desktop center, mobile left */}
-          <div
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={spring}
+          className="text-center mb-16"
+        >
+          <div style={{ overflow: 'hidden' }}>
+            <motion.h2
+              id="timeline-heading"
+              initial={{ y: '110%' }}
+              animate={inView ? { y: '0%' } : {}}
+              transition={{ ...spring, delay: 0.05 }}
+              className="font-display text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
+            >
+              Education &amp; Experience
+            </motion.h2>
+          </div>
+          <motion.div
+            className="aurora-bar"
             aria-hidden="true"
-            className="absolute top-0 bottom-0 left-6 md:left-1/2 md:-translate-x-px w-px"
-            style={{
-              background: 'linear-gradient(to bottom, transparent, rgba(61,240,194,0.4), rgba(139,92,246,0.3), rgba(61,240,194,0.2), transparent)',
-              boxShadow: '0 0 10px rgba(61,240,194,0.2)',
-            }}
+            initial={{ scaleX: 0 }}
+            animate={inView ? { scaleX: 1 } : {}}
+            transition={{ delay: 0.3, duration: 0.65, ease: 'easeOut' }}
+            style={{ originX: 0.5 }}
           />
+        </motion.div>
 
-          {ENTRIES.map((entry, index) => (
-            <TimelineCard key={entry.id} entry={entry} index={index} />
-          ))}
+        {/* Two-column grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+
+          {/* ── Education column ── */}
+          <div>
+            <ColumnHeader
+              icon={GraduationCap}
+              label="Education"
+              color="#8b5cf6"
+              tint="rgba(139,92,246,0.15)"
+              inView={inView}
+              delay={0.15}
+            />
+            <div className="space-y-5">
+              {educationEntries.map((entry, i) => (
+                <TimelineCard key={entry.id} entry={entry} index={i} />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Experience column ── */}
+          <div>
+            <ColumnHeader
+              icon={Briefcase}
+              label="Experience"
+              color="#3df0c2"
+              tint="rgba(61,240,194,0.15)"
+              inView={inView}
+              delay={0.22}
+            />
+            <div className="space-y-5">
+              {workEntries.map((entry, i) => (
+                <TimelineCard key={entry.id} entry={entry} index={i} />
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

@@ -1,35 +1,29 @@
 import { useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Mail, Linkedin, Github, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react'
-
-// Aurora color per contact item for variety
-const AURORA_COLORS = ['#3df0c2', '#8b5cf6', '#38bdf8', '#3df0c2'] as const
+import { Mail, Linkedin, Github, Send, CheckCircle, AlertCircle } from 'lucide-react'
 
 const CONTACT_INFO = [
   {
     Icon: Mail,
     label: 'Email',
-    value: 'shirishparasa@gmail.com',
     href: 'mailto:shirishparasa@gmail.com',
+    color: '#3df0c2',
+    tint: 'rgba(61,240,194,0.1)',
   },
   {
     Icon: Linkedin,
     label: 'LinkedIn',
-    value: 'linkedin.com/in/shirish-parasa',
     href: 'https://www.linkedin.com/in/shirish-parasa-537266362',
+    color: '#8b5cf6',
+    tint: 'rgba(139,92,246,0.1)',
   },
   {
     Icon: Github,
     label: 'GitHub',
-    value: 'github.com/shirishp16',
     href: 'https://github.com/shirishp16',
-  },
-  {
-    Icon: MapPin,
-    label: 'Location',
-    value: 'Powell, Ohio, United States',
-    href: undefined,
+    color: '#38bdf8',
+    tint: 'rgba(56,189,248,0.1)',
   },
 ]
 
@@ -41,7 +35,7 @@ interface FormFields {
   message: string
 }
 
-// ─── Field wrapper — defined at module scope to avoid recreating on each render ─
+// ─── Field wrapper ─────────────────────────────────────────────────────────────
 function Field({
   id, label, error, children,
 }: { id: string; label: string; error?: string; children: React.ReactNode }) {
@@ -79,7 +73,6 @@ function ContactForm() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (!validate()) return
-
     const subject = encodeURIComponent(`Portfolio Contact from ${fields.name}`)
     const body    = encodeURIComponent(`Name: ${fields.name}\nEmail: ${fields.email}\n\n${fields.message}`)
     window.location.href = `mailto:shirishparasa@gmail.com?subject=${subject}&body=${body}`
@@ -96,15 +89,13 @@ function ContactForm() {
     fontSize: '0.875rem',
     color: 'var(--color-text-primary)',
     outline: 'none',
-    transition: 'border-color 0.2s, box-shadow 0.2s',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
   })
 
-  const inputFocusHandlers = (err?: string) => ({
+  const focusHandlers = (err?: string) => ({
     onFocus: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       e.currentTarget.style.borderColor = err ? '#f87171' : '#3df0c2'
-      e.currentTarget.style.boxShadow = err
-        ? '0 0 0 2px rgba(248,113,113,0.2)'
-        : '0 0 0 2px rgba(61,240,194,0.15)'
+      e.currentTarget.style.boxShadow = err ? '0 0 0 2px rgba(248,113,113,0.2)' : '0 0 0 2px rgba(61,240,194,0.15)'
     },
     onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       e.currentTarget.style.borderColor = err ? '#f87171' : 'rgba(61,240,194,0.15)'
@@ -114,64 +105,41 @@ function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate aria-label="Contact form" className="space-y-4">
-      {/* Note about mailto behaviour */}
-      <p
-        className="text-xs rounded-lg px-4 py-3"
-        style={{
-          color: 'var(--color-text-muted)',
-          background: 'rgba(61,240,194,0.04)',
-          border: '1px solid rgba(61,240,194,0.12)',
-          borderLeft: '3px solid rgba(61,240,194,0.4)',
-        }}
-      >
-        📬 Submitting will open your email client pre-filled with your message — no backend required.
-      </p>
-
       <Field id="contact-name" label="Name" error={errors.name}>
         <input
-          id="contact-name"
-          type="text"
-          autoComplete="name"
-          aria-required="true"
-          aria-invalid={!!errors.name}
+          id="contact-name" type="text" autoComplete="name"
+          aria-required="true" aria-invalid={!!errors.name}
           placeholder="Your name"
           value={fields.name}
           onChange={(e) => { setFields(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })) }}
           style={inputStyle(errors.name)}
-          {...inputFocusHandlers(errors.name)}
+          {...focusHandlers(errors.name)}
         />
       </Field>
 
       <Field id="contact-email" label="Email" error={errors.email}>
         <input
-          id="contact-email"
-          type="email"
-          autoComplete="email"
-          aria-required="true"
-          aria-invalid={!!errors.email}
+          id="contact-email" type="email" autoComplete="email"
+          aria-required="true" aria-invalid={!!errors.email}
           placeholder="yourname@example.com"
           value={fields.email}
           onChange={(e) => { setFields(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: '' })) }}
           style={inputStyle(errors.email)}
-          {...inputFocusHandlers(errors.email)}
+          {...focusHandlers(errors.email)}
         />
       </Field>
 
       <Field id="contact-message" label="Message" error={errors.message}>
         <textarea
-          id="contact-message"
-          rows={5}
-          aria-required="true"
-          aria-invalid={!!errors.message}
-          placeholder="Hi! I'd love to connect about…"
+          id="contact-message" rows={5}
+          aria-required="true" aria-invalid={!!errors.message}
+          placeholder="Hi Shirish, I'd love to connect about…"
           value={fields.message}
           onChange={(e) => { setFields(f => ({ ...f, message: e.target.value })); setErrors(er => ({ ...er, message: '' })) }}
           style={{ ...inputStyle(errors.message), resize: 'none' }}
           onFocus={(e) => {
             e.currentTarget.style.borderColor = errors.message ? '#f87171' : '#3df0c2'
-            e.currentTarget.style.boxShadow = errors.message
-              ? '0 0 0 2px rgba(248,113,113,0.2)'
-              : '0 0 0 2px rgba(61,240,194,0.15)'
+            e.currentTarget.style.boxShadow = errors.message ? '0 0 0 2px rgba(248,113,113,0.2)' : '0 0 0 2px rgba(61,240,194,0.15)'
           }}
           onBlur={(e) => {
             e.currentTarget.style.borderColor = errors.message ? '#f87171' : 'rgba(61,240,194,0.15)'
@@ -182,14 +150,13 @@ function ContactForm() {
 
       <motion.button
         type="submit"
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: 1.02, transition: { duration: 0.1 } }}
         whileTap={{ scale: 0.97 }}
         className="btn-primary w-full justify-center py-3 text-sm"
       >
         <Send size={15} /> Send Message
       </motion.button>
 
-      {/* Status messages */}
       {status === 'success' && (
         <motion.p
           initial={{ opacity: 0, y: 6 }}
@@ -198,7 +165,7 @@ function ContactForm() {
           role="status"
           style={{ color: '#3df0c2' }}
         >
-          <CheckCircle size={16} /> Your email client should have opened — thanks for reaching out!
+          <CheckCircle size={16} /> Thanks for reaching out — your email client should be open!
         </motion.p>
       )}
       {status === 'error' && (
@@ -210,9 +177,19 @@ function ContactForm() {
   )
 }
 
+// Variants for staggered contact info rows
+const listVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+}
+const rowVariants = {
+  hidden:   { opacity: 0, x: -24 },
+  visible:  { opacity: 1, x: 0, transition: { type: 'spring' as const, stiffness: 260, damping: 22 } },
+}
+
 // ─── Main section ─────────────────────────────────────────────────────────────
 export default function Contact() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.08 })
 
   return (
     <section
@@ -224,91 +201,126 @@ export default function Contact() {
       <div className="max-w-5xl mx-auto">
 
         {/* Heading */}
-        <div className="text-center mb-14">
-          <h2
-            id="contact-heading"
-            className="font-display text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+          className="text-center mb-16"
+        >
+          <div style={{ overflow: 'hidden' }}>
+            <motion.h2
+              id="contact-heading"
+              initial={{ y: '110%' }}
+              animate={inView ? { y: '0%' } : {}}
+              transition={{ type: 'spring', stiffness: 220, damping: 22, delay: 0.06 }}
+              className="font-display text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
+            >
+              Contact
+            </motion.h2>
+          </div>
+          <motion.div
+            className="aurora-bar"
+            aria-hidden="true"
+            initial={{ scaleX: 0 }}
+            animate={inView ? { scaleX: 1 } : {}}
+            transition={{ delay: 0.3, duration: 0.6, ease: 'easeOut' }}
+            style={{ originX: 0.5 }}
+          />
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="mt-5 text-[var(--color-text-secondary)] max-w-lg mx-auto text-base"
           >
-            Get in Touch
-          </h2>
-          <div className="aurora-bar" aria-hidden="true" />
-          <p className="mt-5 text-[var(--color-text-secondary)] max-w-lg mx-auto">
             Whether you have a project in mind, a job opportunity, or just want to say hi —
             I'd love to hear from you!
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
 
-          {/* ── Left: contact info ───────────────────────────────────── */}
+          {/* ── Left: unified contact card ── */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, ease: 'easeOut' }}
-            className="space-y-3"
+            initial={{ opacity: 0, x: -40, scale: 0.96 }}
+            animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
+            transition={{ type: 'spring', stiffness: 220, damping: 24, delay: 0.1 }}
           >
-            {CONTACT_INFO.map(({ Icon, label, value, href }, index) => {
-              const color = AURORA_COLORS[index]
-              const content = (
-                <div
-                  className="glass-panel iridescent-border flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group"
-                  style={{ '--hover-glow': `${color}14` } as React.CSSProperties}
+            <div
+              className="glass-panel iridescent-border rounded-2xl overflow-hidden"
+              style={{ padding: '2rem' }}
+            >
+              {/* Card header */}
+              <div className="mb-6 pb-5" style={{ borderBottom: '1px solid rgba(61,240,194,0.1)' }}>
+                <h3
+                  className="font-display text-xl font-bold"
+                  style={{ color: 'var(--color-text-primary)' }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300"
-                    style={{ background: `${color}18` }}
+                  Let's Connect
+                </h3>
+                <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                </p>
+              </div>
+
+              {/* Contact rows */}
+              <motion.ul
+                variants={listVariants}
+                initial="hidden"
+                animate={inView ? 'visible' : 'hidden'}
+                className="space-y-0"
+                aria-label="Contact information"
+              >
+                {CONTACT_INFO.map(({ Icon, label, href, color, tint }, i) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith('mailto') ? undefined : '_blank'}
+                    rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                    aria-label={label}
+                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded-xl"
                   >
-                    <Icon
-                      size={18}
-                      aria-hidden="true"
-                      style={{ color }}
-                    />
-                  </div>
-                  <div>
-                    <p
-                      className="text-xs font-medium uppercase tracking-wider"
-                      style={{ color: 'var(--color-text-muted)' }}
+                    <motion.li
+                      variants={rowVariants}
+                      className={`flex items-center gap-4 py-4 group${i < CONTACT_INFO.length - 1 ? ' border-b' : ''}`}
+                      style={i < CONTACT_INFO.length - 1 ? { borderColor: 'rgba(61,240,194,0.07)' } : {}}
                     >
-                      {label}
-                    </p>
-                    <p
-                      className="text-sm font-medium transition-colors duration-200"
-                      style={{ color: 'var(--color-text-secondary)' }}
-                    >
-                      {value}
-                    </p>
-                  </div>
-                </div>
-              )
-              return href ? (
-                <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith('mailto') ? undefined : '_blank'}
-                  rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                  aria-label={`${label}: ${value}`}
-                  className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded-xl"
-                >
-                  {content}
-                </a>
-              ) : (
-                <div key={label}>{content}</div>
-              )
-            })}
+                      <div
+                        className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-150 group-hover:scale-110"
+                        style={{ background: tint }}
+                      >
+                        <Icon size={19} aria-hidden="true" style={{ color }} />
+                      </div>
+                      <p
+                        className="text-base font-semibold transition-colors duration-150 group-hover:text-[var(--color-text-primary)]"
+                        style={{ color: 'var(--color-text-secondary)' }}
+                      >
+                        {label}
+                      </p>
+                      <div className="ml-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: tint }}>
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                            <path d="M1 9L9 1M9 1H3M9 1V7" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </motion.li>
+                  </a>
+                ))}
+              </motion.ul>
+            </div>
           </motion.div>
 
-          {/* ── Right: contact form ──────────────────────────────────── */}
+          {/* ── Right: contact form ── */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, ease: 'easeOut', delay: 0.15 }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ type: 'spring', stiffness: 220, damping: 24, delay: 0.2 }}
           >
             <ContactForm />
           </motion.div>
         </div>
 
         {/* Footer */}
-        <footer className="mt-20 pt-8 text-center" style={{ borderTop: '1px solid rgba(61,240,194,0.1)' }}>
+        <footer className="mt-20 pt-8 text-center" style={{ borderTop: '1px solid rgba(61,240,194,0.08)' }}>
           <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
             Designed &amp; built by{' '}
             <span style={{ color: '#3df0c2', fontWeight: 500 }}>Shirish Parasa</span>
@@ -316,9 +328,9 @@ export default function Contact() {
           </p>
           <div className="flex justify-center gap-5 mt-4">
             {[
-              { label: 'GitHub',   href: 'https://github.com/shirishp16',      Icon: Github   },
-              { label: 'LinkedIn', href: 'https://linkedin.com/in/shirish-parasa-537266362', Icon: Linkedin },
-              { label: 'Email',    href: 'mailto:shirishparasa@gmail.com',        Icon: Mail     },
+              { label: 'GitHub',   href: 'https://github.com/shirishp16',                        Icon: Github   },
+              { label: 'LinkedIn', href: 'https://linkedin.com/in/shirish-parasa-537266362',      Icon: Linkedin },
+              { label: 'Email',    href: 'mailto:shirishparasa@gmail.com',                        Icon: Mail     },
             ].map(({ label, href, Icon }) => (
               <motion.a
                 key={label}
@@ -326,9 +338,9 @@ export default function Contact() {
                 aria-label={label}
                 target={href.startsWith('mailto') ? undefined : '_blank'}
                 rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                whileHover={{ scale: 1.2, y: -2, filter: 'drop-shadow(0 0 6px rgba(61,240,194,0.6))' }}
+                whileHover={{ scale: 1.2, y: -2, filter: 'drop-shadow(0 0 6px rgba(61,240,194,0.6))', transition: { duration: 0.1 } }}
                 whileTap={{ scale: 0.95 }}
-                className="transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded"
+                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded"
                 style={{ color: 'var(--color-text-muted)' }}
               >
                 <Icon size={18} />

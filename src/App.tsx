@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
-import Navbar  from './components/Navbar'
-import Intro   from './sections/Intro'
-import About   from './sections/About'
-import Timeline  from './sections/Timeline'
-import TechStack from './sections/TechStack'
-import Projects  from './sections/Projects'
-import Contact   from './sections/Contact'
+import Navbar     from './components/Navbar'
+import Intro      from './sections/Intro'
+import About      from './sections/About'
+import Experience from './sections/Experience'
+import Education  from './sections/Education'
+import TechStack  from './sections/TechStack'
+import Projects   from './sections/Projects'
+import Contact    from './sections/Contact'
 
 // IDs of every section — must match the id="" on each <section> element
-const SECTION_IDS = ['intro', 'about', 'timeline', 'techstack', 'projects', 'contact']
+const SECTION_IDS = ['intro', 'about', 'experience', 'education', 'techstack', 'projects', 'contact']
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>('intro')
@@ -52,12 +53,13 @@ export default function App() {
       <Navbar activeSection={activeSection} />
 
       <main id="main-content">
-        <Intro    />
-        <About    />
-        <Timeline />
-        <TechStack />
-        <Projects />
-        <Contact  />
+        <Intro      />
+        <About      />
+        <Experience />
+        <Education  />
+        <TechStack  />
+        <Projects   />
+        <Contact    />
       </main>
     </>
   )

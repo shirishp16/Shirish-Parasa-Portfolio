@@ -3,31 +3,31 @@ import { useInView } from 'react-intersection-observer'
 import { Github, ExternalLink, Play } from 'lucide-react'
 import { projects, type ProjectCategory } from '../data/projects'
 
-// Badge color per category — adds aurora variety
-const BADGE_COLORS: Record<ProjectCategory, { color: string; border: string; bg: string }> = {
-  web:   { color: '#3df0c2', border: 'rgba(61,240,194,0.3)',  bg: 'rgba(61,240,194,0.08)'  },
-  ml:    { color: '#8b5cf6', border: 'rgba(139,92,246,0.3)',  bg: 'rgba(139,92,246,0.08)'  },
-  tools: { color: '#38bdf8', border: 'rgba(56,189,248,0.3)',  bg: 'rgba(56,189,248,0.08)'  },
+// Used only for the image fallback gradient — no badge rendered
+const FALLBACK_COLORS: Record<ProjectCategory, { color: string; bg: string }> = {
+  web:   { color: '#3df0c2', bg: 'rgba(61,240,194,0.12)'  },
+  ml:    { color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)'  },
+  tools: { color: '#38bdf8', bg: 'rgba(56,189,248,0.12)'  },
 }
 
 // ─── Project card ─────────────────────────────────────────────────────────────
 function ProjectCard({ project }: { project: (typeof projects)[number] }) {
-  const badge = BADGE_COLORS[project.category]
+  const fb = FALLBACK_COLORS[project.category]
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 })
 
   return (
     <motion.article
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -5, boxShadow: '0 12px 40px rgba(61,240,194,0.1)' }}
-      transition={{ duration: 0.25 }}
-      className="glass-panel iridescent-border rounded-xl overflow-hidden flex flex-col shadow-lg"
+      ref={ref}
+      initial={{ opacity: 0, y: 60, scale: 0.94 }}
+      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+      whileHover={{ y: -6, boxShadow: '0 16px 48px rgba(61,240,194,0.12)', transition: { duration: 0.15 } }}
+      className="glass-panel iridescent-border rounded-2xl overflow-hidden flex flex-col shadow-lg"
       aria-label={`Project: ${project.title}`}
     >
-      {/* Project image — taller than before */}
+      {/* Project image */}
       <div
-        className="relative overflow-hidden h-60"
+        className="relative overflow-hidden h-72"
         style={{ background: 'rgba(26,40,64,0.8)' }}
       >
         <img
@@ -37,44 +37,31 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
           loading="lazy"
           onError={(e) => {
             e.currentTarget.style.display = 'none'
-            const fb = e.currentTarget.nextElementSibling as HTMLElement | null
-            if (fb) fb.hidden = false
+            const fallback = e.currentTarget.nextElementSibling as HTMLElement | null
+            if (fallback) fallback.hidden = false
           }}
         />
-        {/* Fallback when image is missing */}
+        {/* Fallback gradient */}
         <div
           hidden
           aria-hidden="true"
           className="w-full h-full flex items-center justify-center"
           style={{
-            background: `linear-gradient(135deg, ${badge.bg} 0%, rgba(11,18,32,1) 100%)`,
+            background: `linear-gradient(135deg, ${fb.bg} 0%, rgba(11,18,32,1) 100%)`,
           }}
         >
           <span
-            className="text-5xl font-bold select-none font-display"
-            style={{ color: `${badge.color}44` }}
+            className="text-6xl font-bold select-none font-display"
+            style={{ color: `${fb.color}44` }}
           >
             {project.title[0]}
           </span>
         </div>
-
-        {/* Category badge */}
-        <span
-          className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full font-mono"
-          style={{
-            background: 'rgba(6,9,15,0.85)',
-            backdropFilter: 'blur(8px)',
-            color: badge.color,
-            border: `1px solid ${badge.border}`,
-          }}
-        >
-          {project.category.toUpperCase()}
-        </span>
       </div>
 
       {/* Card body */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-[var(--color-text-primary)] font-semibold text-base mb-2 leading-snug">
+      <div className="p-6 flex flex-col flex-1">
+        <h3 className="text-[var(--color-text-primary)] font-semibold text-lg mb-2 leading-snug">
           {project.title}
         </h3>
         <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed flex-1">
@@ -108,7 +95,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
               style={{ border: '1px solid rgba(61,240,194,0.15)', color: 'var(--color-text-secondary)' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(61,240,194,0.4)'; e.currentTarget.style.color = 'var(--color-text-primary)' }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(61,240,194,0.15)'; e.currentTarget.style.color = 'var(--color-text-secondary)' }}
@@ -122,7 +109,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
               href={project.demoVideoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
               style={{ border: '1px solid rgba(56,189,248,0.2)', color: 'var(--color-text-secondary)' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(56,189,248,0.5)'; e.currentTarget.style.color = '#38bdf8' }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(56,189,248,0.2)'; e.currentTarget.style.color = 'var(--color-text-secondary)' }}
@@ -150,7 +137,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
 
 // ─── Main section ─────────────────────────────────────────────────────────────
 export default function Projects() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.05 })
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.05 })
 
   return (
     <section
@@ -159,26 +146,38 @@ export default function Projects() {
       aria-labelledby="projects-heading"
       className="py-24 px-6"
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
 
         {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+          className="text-center mb-14"
         >
-          <h2
-            id="projects-heading"
-            className="font-display text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
-          >
-            Projects
-          </h2>
-          <div className="aurora-bar" aria-hidden="true" />
+          <div style={{ overflow: 'hidden' }}>
+            <motion.h2
+              id="projects-heading"
+              initial={{ y: '110%' }}
+              animate={inView ? { y: '0%' } : {}}
+              transition={{ type: 'spring', stiffness: 220, damping: 22, delay: 0.06 }}
+              className="font-display text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4"
+            >
+              Projects
+            </motion.h2>
+          </div>
+          <motion.div
+            className="aurora-bar"
+            aria-hidden="true"
+            initial={{ scaleX: 0 }}
+            animate={inView ? { scaleX: 1 } : {}}
+            transition={{ delay: 0.3, duration: 0.65, ease: 'easeOut' }}
+            style={{ originX: 0.5 }}
+          />
         </motion.div>
 
-        {/* Card grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 2-column card grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}

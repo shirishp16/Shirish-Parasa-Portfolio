@@ -105,19 +105,36 @@ section[id] {
    Keyframes
    ══════════════════════════════════════════════════════════════════════════════ */
 
-/* Drifting aurora conic-gradient mesh */
-@keyframes aurora-drift {
-  0%   { transform: rotate(0deg) scale(1); }
-  33%  { transform: rotate(120deg) scale(1.08); }
-  66%  { transform: rotate(240deg) scale(0.95); }
-  100% { transform: rotate(360deg) scale(1); }
+/* Aurora curtain band 1 — mint/sky, slow diagonal sweep */
+@keyframes aurora-wave1 {
+  0%   { transform: skewY(-8deg)  translateX(-40px) scaleY(0.9);  }
+  25%  { transform: skewY(-12deg) translateX(60px)  scaleY(1.12); }
+  50%  { transform: skewY(-7deg)  translateX(40px)  scaleY(0.88); }
+  75%  { transform: skewY(-11deg) translateX(-20px) scaleY(1.08); }
+  100% { transform: skewY(-8deg)  translateX(-40px) scaleY(0.9);  }
 }
 
-/* Gentle float for hero orbs */
-@keyframes float {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  33%       { transform: translateY(-14px) translateX(6px); }
-  66%       { transform: translateY(-6px) translateX(-8px); }
+/* Aurora curtain band 2 — violet/mint, gentle counter-flow */
+@keyframes aurora-wave2 {
+  0%   { transform: skewY(-10deg) translateX(50px)  scaleY(1.0);  }
+  30%  { transform: skewY(-7deg)  translateX(-60px) scaleY(0.87); }
+  60%  { transform: skewY(-13deg) translateX(-30px) scaleY(1.1);  }
+  100% { transform: skewY(-10deg) translateX(50px)  scaleY(1.0);  }
+}
+
+/* Aurora curtain band 3 — sky/violet, slow deep sweep */
+@keyframes aurora-wave3 {
+  0%   { transform: skewY(-6deg)  translateX(30px)  scaleY(0.92); }
+  33%  { transform: skewY(-10deg) translateX(-50px) scaleY(1.1);  }
+  66%  { transform: skewY(-5deg)  translateX(-20px) scaleY(0.88); }
+  100% { transform: skewY(-6deg)  translateX(30px)  scaleY(0.92); }
+}
+
+/* Aurora opacity shimmer — gentle breathing */
+@keyframes aurora-shimmer {
+  0%, 100% { opacity: 0.62; }
+  40%       { opacity: 0.88; }
+  70%       { opacity: 0.65; }
 }
 
 /* Holographic shimmer sweep for buttons */
@@ -239,3 +256,72 @@ section[id] {
 .font-display {
   font-family: var(--font-display);
 }
+
+/* ── Aurora bands (hero section) ─────────────────────────────────────────── */
+.aurora-band {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.5s ease;
+}
+
+.aurora-band-1 {
+  width: 210%;
+  height: 420px;
+  top: -15%;
+  left: -55%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(61, 240, 194, 0.62) 28%,
+    rgba(56, 189, 248, 0.42) 55%,
+    rgba(61, 240, 194, 0.28) 75%,
+    transparent 100%
+  );
+  filter: blur(24px);
+  opacity: 0.72;
+  animation: aurora-wave1 12s ease-in-out infinite,
+             aurora-shimmer 5s ease-in-out infinite;
+}
+
+.aurora-band-2 {
+  width: 185%;
+  height: 360px;
+  top: 18%;
+  left: -42%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 92, 246, 0.58) 32%,
+    rgba(61, 240, 194, 0.28) 62%,
+    rgba(56, 189, 248, 0.18) 82%,
+    transparent 100%
+  );
+  filter: blur(28px);
+  opacity: 0.65;
+  animation: aurora-wave2 17s ease-in-out infinite,
+             aurora-shimmer 6s ease-in-out 1s infinite;
+}
+
+.aurora-band-3 {
+  width: 195%;
+  height: 380px;
+  top: 44%;
+  left: -48%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.55) 38%,
+    rgba(139, 92, 246, 0.35) 62%,
+    transparent 100%
+  );
+  filter: blur(26px);
+  opacity: 0.6;
+  animation: aurora-wave3 14s ease-in-out infinite,
+             aurora-shimmer 5.5s ease-in-out 2s infinite;
+}
+
+/* When mouse is over the hero — intensify all bands */
+.aurora-intense .aurora-band-1 { opacity: 0.92; }
+.aurora-intense .aurora-band-2 { opacity: 0.82; }
+.aurora-intense .aurora-band-3 { opacity: 0.76; }
