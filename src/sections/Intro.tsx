@@ -17,24 +17,28 @@ const SOCIALS = [
   { label: 'Email',    href: 'mailto:shirishparasa@gmail.com',                      Icon: Mail,     glowColor: '#38bdf8' },
 ]
 
-// Deterministic star positions — golden-angle spread, stable across renders
+// Hash-based PRNG — x and y are uncorrelated, so no diagonal banding
+function floatHash(n: number): number {
+  const s = Math.sin(n) * 43758.5453
+  return s - Math.floor(s)
+}
 function useStars(count: number) {
-  return useMemo(() => {
-    return Array.from({ length: count }, (_, i) => ({
+  return useMemo(() =>
+    Array.from({ length: count }, (_, i) => ({
       id:       i,
-      x:        ((i * 137.508 + 11) % 100),
-      y:        ((i * 73.19 + 23)   % 100),
-      size:     0.8 + ((i * 3) % 3) * 0.6,
-      opacity:  0.3 + ((i * 7) % 5) * 0.1,
-      duration: 2 + ((i * 0.37) % 3),
-      delay:    (i * 0.23) % 5,
+      x:        floatHash(i * 127.1  + 11) * 100,
+      y:        floatHash(i * 311.7  + 23) * 100,
+      size:     1.0 + floatHash(i * 419.3) * 1.8,
+      opacity:  0.25 + floatHash(i * 7.53) * 0.45,
+      duration: 2   + floatHash(i * 2.71) * 3,
+      delay:    floatHash(i * 1.41) * 5,
     }))
-  }, [count])
+  , [count])
 }
 
 export default function Intro() {
   const [isHovering, setIsHovering] = useState(false)
-  const stars = useStars(90)
+  const stars = useStars(300)
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -58,13 +62,13 @@ export default function Intro() {
         {stars.map((star) => (
           <div
             key={star.id}
-            className="absolute rounded-full"
+            className="star-dot absolute rounded-full"
             style={{
               left:      `${star.x}%`,
               top:       `${star.y}%`,
               width:     `${star.size}px`,
               height:    `${star.size}px`,
-              background: '#fff',
+              background: 'var(--color-star, #fff)',
               opacity:   star.opacity,
               animation: `twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
             }}
@@ -83,7 +87,7 @@ export default function Intro() {
         <motion.div variants={item} className="mb-3">
           <p
             className="text-xl md:text-2xl font-light italic tracking-wide"
-            style={{ color: 'rgba(61,240,194,0.72)', fontFamily: 'var(--font-display)' }}
+            style={{ color: 'var(--color-intro-greeting)', fontFamily: 'var(--font-display)' }}
           >
             hey, i'm
           </p>
@@ -94,14 +98,7 @@ export default function Intro() {
           variants={item}
           className="font-display text-6xl sm:text-7xl md:text-8xl font-extrabold leading-none mb-5 tracking-tight"
         >
-          <span
-            style={{
-              background: 'linear-gradient(135deg, #3df0c2 0%, #38bdf8 45%, #8b5cf6 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
+          <span className="hero-name">
             Shirish Parasa
           </span>
         </motion.h1>
@@ -136,9 +133,9 @@ export default function Intro() {
             whileTap={{ scale: 0.97 }}
             onClick={() => scrollTo('contact')}
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
-            style={{ border: '1px solid rgba(61,240,194,0.35)', color: '#3df0c2', background: 'transparent' }}
+            style={{ border: '1px solid var(--color-ghost-btn-border)', color: 'var(--color-ghost-btn)', background: 'transparent' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(61,240,194,0.07)'
+              e.currentTarget.style.background = 'var(--color-ghost-btn-hover-bg)'
               e.currentTarget.style.boxShadow = '0 0 20px rgba(61,240,194,0.15)'
             }}
             onMouseLeave={(e) => {

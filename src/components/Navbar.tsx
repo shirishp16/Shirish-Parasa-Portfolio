@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Sun, Moon } from 'lucide-react'
 
 interface NavbarProps {
   activeSection: string
+  theme: 'dark' | 'light'
+  onToggleTheme: () => void
 }
 
 const NAV_LINKS = [
@@ -16,7 +18,7 @@ const NAV_LINKS = [
   { label: 'Contact',    href: '#contact'    },
 ]
 
-export default function Navbar({ activeSection }: NavbarProps) {
+export default function Navbar({ activeSection, theme, onToggleTheme }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -45,7 +47,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
       style={
         scrolled
           ? {
-              background: 'rgba(6,9,15,0.82)',
+              background: 'var(--color-nav-bg-scrolled)',
               backdropFilter: 'blur(24px)',
               WebkitBackdropFilter: 'blur(24px)',
               borderBottom: '1px solid rgba(61,240,194,0.12)',
@@ -91,7 +93,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                 <button
                   onClick={() => scrollTo(href)}
                   aria-current={isActive ? 'page' : undefined}
-                  className="relative px-3 py-2 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+                  className="relative px-3 py-2 rounded text-sm font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
                   style={{ color: isActive ? '#3df0c2' : 'var(--color-text-secondary)' }}
                 >
                   {label}
@@ -111,6 +113,16 @@ export default function Navbar({ activeSection }: NavbarProps) {
             )
           })}
         </ul>
+
+        {/* Theme toggle (desktop) */}
+        <button
+          onClick={onToggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="hidden md:flex p-2 rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+          style={{ color: 'var(--color-text-secondary)' }}
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
 
         {/* Desktop CTA */}
         <button
@@ -146,7 +158,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className="md:hidden px-6 pb-5"
             style={{
-              background: 'rgba(11,18,32,0.92)',
+              background: 'var(--color-nav-drawer-bg)',
               backdropFilter: 'blur(24px)',
               WebkitBackdropFilter: 'blur(24px)',
               borderBottom: '1px solid rgba(61,240,194,0.1)',
@@ -161,7 +173,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                       role="menuitem"
                       onClick={() => scrollTo(href)}
                       aria-current={isActive ? 'page' : undefined}
-                      className="w-full text-left px-3 py-2.5 rounded text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+                      className="w-full text-left px-3 py-2.5 rounded text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
                       style={{
                         color: isActive ? '#3df0c2' : 'var(--color-text-secondary)',
                         background: isActive ? 'rgba(61,240,194,0.06)' : 'transparent',
@@ -174,9 +186,18 @@ export default function Navbar({ activeSection }: NavbarProps) {
               })}
             </ul>
             <div
-              className="mt-3 pt-3"
+              className="mt-3 pt-3 flex flex-col gap-2"
               style={{ borderTop: '1px solid rgba(61,240,194,0.1)' }}
             >
+              <button
+                onClick={onToggleTheme}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="flex items-center gap-2 px-3 py-2.5 rounded text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]"
+                style={{ color: 'var(--color-text-secondary)' }}
+              >
+                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </button>
               <button
                 onClick={() => scrollTo('#contact')}
                 className="btn-primary w-full justify-center py-2.5 text-sm"

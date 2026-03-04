@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import StarField from '../components/StarField'
 
 const spring = { type: 'spring' as const, stiffness: 220, damping: 22 }
 
@@ -14,6 +15,24 @@ interface EduEntry {
   logo?: string
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  HOW TO EDIT EDUCATION ENTRIES
+//
+//  Add, remove, or reorder objects in the array below.
+//  Fields:
+//    id          — unique string (e.g. 'edu-2'); used as React key
+//    institution — full school name
+//    degree      — degree + major/minor string
+//    period      — graduation date or range (e.g. 'May 2027')
+//    location    — city, state
+//    gpa         — (optional) display GPA string (e.g. '3.9 / 4.0')
+//    coursework  — (optional) string[] of course names shown as chips
+//                  Add as many as you like — they wrap automatically
+//    logo        — (optional) path to institution logo image
+//                  · Drop a PNG/SVG into public/assets/ and set:
+//                    logo: '/assets/osu-logo.png'
+//                  · If omitted, the first letter of `institution` is shown
+// ─────────────────────────────────────────────────────────────────────────────
 const EDU_ENTRIES: EduEntry[] = [
   {
     id: 'edu-1',
@@ -27,18 +46,6 @@ const EDU_ENTRIES: EduEntry[] = [
       'Databases & Computer Networks',
       'Software Engineering',
       'Statistics & Probability',
-    ],
-  },
-  {
-    id: 'edu-2',
-    institution: 'Tech Bootcamp',
-    degree: 'Full-Stack Web Development Certificate',
-    period: 'Jun 2022 – Sep 2022',
-    location: 'Remote',
-    coursework: [
-      'React & TypeScript',
-      'Node.js & Express',
-      'PostgreSQL & Data Modeling',
     ],
   },
 ]
@@ -84,15 +91,15 @@ function EducationCard({ entry, index }: { entry: EduEntry; index: number }) {
         <LogoBox institution={entry.institution} logo={entry.logo} />
         <div className="min-w-0">
           <h3
-            className="font-semibold text-base leading-snug"
+            className="font-semibold text-lg leading-snug"
             style={{ color: 'var(--color-text-primary)' }}
           >
             {entry.institution}
           </h3>
-          <p className="text-sm mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
+          <p className="text-base mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
             {entry.degree}
           </p>
-          <p className="text-xs mt-1 font-mono" style={{ color: 'var(--color-text-muted)' }}>
+          <p className="text-sm mt-1 font-mono" style={{ color: 'var(--color-text-muted)' }}>
             {entry.period} · {entry.location}
           </p>
         </div>
@@ -102,7 +109,7 @@ function EducationCard({ entry, index }: { entry: EduEntry; index: number }) {
       <div style={{ height: '1px', background: 'rgba(139,92,246,0.12)', marginBottom: '1.25rem' }} />
 
       {entry.gpa && (
-        <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
+        <p className="text-base mb-4" style={{ color: 'var(--color-text-secondary)' }}>
           <span style={{ color: 'var(--color-text-muted)' }}>GPA: </span>
           <span className="font-semibold" style={{ color: 'var(--color-text-primary)' }}>{entry.gpa}</span>
         </p>
@@ -110,29 +117,25 @@ function EducationCard({ entry, index }: { entry: EduEntry; index: number }) {
 
       {entry.coursework && entry.coursework.length > 0 && (
         <div>
-          <p className="text-sm font-semibold mb-2.5" style={{ color: 'var(--color-text-primary)' }}>
+          <p className="text-base font-semibold mb-2.5" style={{ color: 'var(--color-text-primary)' }}>
             Relevant Coursework
           </p>
-          <ul className="space-y-1.5">
+          {/* Chip/tag layout — wraps automatically, no long vertical list */}
+          <div className="flex flex-wrap gap-2">
             {entry.coursework.map((course) => (
-              <li
+              <span
                 key={course}
-                className="flex items-center gap-2.5 text-sm"
-                style={{ color: 'var(--color-text-secondary)' }}
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{
+                  background: 'rgba(139,92,246,0.1)',
+                  border: '1px solid rgba(139,92,246,0.22)',
+                  color: 'var(--color-text-secondary)',
+                }}
               >
-                <span
-                  className="shrink-0 rounded-full"
-                  aria-hidden="true"
-                  style={{
-                    width: '5px', height: '5px',
-                    background: '#8b5cf6',
-                    boxShadow: '0 0 5px rgba(139,92,246,0.5)',
-                  }}
-                />
                 {course}
-              </li>
+              </span>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </motion.div>
@@ -147,9 +150,11 @@ export default function Education() {
       id="education"
       ref={ref}
       aria-labelledby="education-heading"
-      className="py-24 px-6 bg-[var(--color-bg-secondary)]"
+      className="relative py-24 px-6 overflow-hidden"
+      style={{ background: 'radial-gradient(ellipse 65% 40% at 10% 15%, rgba(61,240,194,0.05), transparent), var(--color-bg-secondary)' }}
     >
-      <div className="max-w-3xl mx-auto">
+      <StarField count={115} seed={5} />
+      <div className="relative z-10 max-w-4xl mx-auto">
 
         {/* Heading — left-aligned */}
         <motion.div

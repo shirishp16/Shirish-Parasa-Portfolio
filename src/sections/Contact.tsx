@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Mail, Linkedin, Github, Send, CheckCircle, AlertCircle } from 'lucide-react'
+import StarField from '../components/StarField'
 
 const CONTACT_INFO = [
   {
@@ -82,7 +83,7 @@ function ContactForm() {
 
   const inputStyle = (err?: string): React.CSSProperties => ({
     width: '100%',
-    background: 'rgba(6,9,15,0.75)',
+    background: 'var(--color-input-bg)',
     border: `1px solid ${err ? '#f87171' : 'rgba(61,240,194,0.15)'}`,
     borderRadius: '0.5rem',
     padding: '0.625rem 1rem',
@@ -196,9 +197,11 @@ export default function Contact() {
       id="contact"
       ref={ref}
       aria-labelledby="contact-heading"
-      className="py-24 px-6 bg-[var(--color-bg-secondary)]"
+      className="relative py-24 px-6 overflow-hidden"
+      style={{ background: 'radial-gradient(ellipse 75% 50% at 85% 5%, rgba(139,92,246,0.06), transparent), var(--color-bg-primary)' }}
     >
-      <div className="max-w-5xl mx-auto">
+      <StarField count={130} seed={6} />
+      <div className="relative z-10 max-w-6xl mx-auto">
 
         {/* Heading */}
         <motion.div

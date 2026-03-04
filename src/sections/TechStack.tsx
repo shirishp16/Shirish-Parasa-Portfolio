@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import { motion, type Variants } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { skills } from '../data/techStack'
+import StarField from '../components/StarField'
 
 // Three aurora colors cycling across the grid — each with tint and top-border rgba
 const AURORA = [
@@ -71,9 +72,10 @@ export default function TechStack() {
       id="techstack"
       ref={ref}
       aria-labelledby="stack-heading"
-      className="py-24 px-6 bg-[var(--color-bg-secondary)]"
+      className="relative py-24 px-6 overflow-hidden"
     >
-      <div className="max-w-5xl mx-auto">
+      <StarField count={170} seed={2} />
+      <div className="relative z-10 max-w-6xl mx-auto">
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}

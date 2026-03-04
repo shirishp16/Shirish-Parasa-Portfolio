@@ -40,27 +40,46 @@ npm run preview   # preview the production build locally
 
 ## Customizing Content
 
-All placeholder text is marked with `// TODO:` comments. Quick map:
-
 ### Name & tagline
-- **`src/sections/Intro.tsx`** — change `"YOUR NAME"` and the tagline `<p>`.
-- **`src/components/Navbar.tsx`** — change the `"YN"` initials and `"YOUR NAME"` brand text.
+- **`src/sections/Intro.tsx`** — edit the `<span className="hero-name">` and tagline `<p>`.
+- **`src/components/Navbar.tsx`** — edit the `SP` initials and `· Shirish Parasa` brand text.
 - **`index.html`** — update `<title>` and all `og:` / `twitter:` meta tags.
 
-### About / bio
-- **`src/sections/About.tsx`** — replace the two `<p>` paragraphs and the `HIGHLIGHTS` array.
+### About / bio & social links
+- **`src/sections/About.tsx`** — edit the two JSX paragraphs inside the `.map()` call (~line 92).
+- Social buttons (GitHub / LinkedIn / Resume): update the `href` values in the array near the bottom of `About.tsx`.
+- Resume link: update `href: '/resume.pdf'` and replace `public/resume.pdf` with your file.
 
-### Education & Experience
-- **`src/sections/Timeline.tsx`** — edit the `ENTRIES` array.
-  Each entry has: `institution`, `role`, `period`, `location`, `description[]`, `coursework?`
+### Experience cards
+- **`src/sections/Experience.tsx`** — edit the `WORK_ENTRIES` array at the top.
+  Fields: `id`, `company`, `title`, `period`, `location`, `description`, `logo?`
+- **To add a company logo:** drop a PNG/SVG into `public/assets/` and set `logo: '/assets/company-logo.png'`. If omitted, the first letter of `company` is used.
+
+### Education cards
+- **`src/sections/Education.tsx`** — edit the `EDU_ENTRIES` array at the top.
+  Fields: `id`, `institution`, `degree`, `period`, `location`, `gpa?`, `coursework?`, `logo?`
+- **Coursework** is shown as wrapped chips — add as many as you like.
+- **To add a school logo:** drop a PNG/SVG into `public/assets/` and set `logo: '/assets/school-logo.png'`.
 
 ### Skills / Tech Stack
 - **`src/data/techStack.ts`** — edit the `techStack` array.
-  `icon` values are [Iconify](https://icon-sets.iconify.design/) IDs (e.g. `logos:react`).
 
 ### Projects
 - **`src/data/projects.ts`** — edit the `projects` array.
-  Each project has: `title`, `description`, `image`, `tech[]`, `githubUrl?`, `demoVideoUrl?`, `liveUrl?`, `category`
+
+  | Field | Required | Notes |
+  |-------|----------|-------|
+  | `id` | yes | Unique key string |
+  | `title` | yes | Project name |
+  | `description` | yes | 2–4 sentences |
+  | `image` | yes | Path relative to `/public`, e.g. `'/projects/myapp.png'` |
+  | `imageAlt` | yes | Screen-reader alt text |
+  | `tech` | yes | Badge labels array |
+  | `category` | yes | `'web'` \| `'ml'` \| `'tools'` |
+  | `githubUrl` | no | Repo link — shows GitHub button |
+  | `demoVideoUrl` | no | YouTube / Loom URL — shows Demo button |
+  | `liveUrl` | no | Deployed site — shows Live button |
+  | `featured` | no | `true` to highlight the card |
 
 ### Contact info & social links
 - **`src/sections/Contact.tsx`** — update the `CONTACT_INFO` array and the `mailto:` URL inside `handleSubmit`.
@@ -68,27 +87,33 @@ All placeholder text is marked with `// TODO:` comments. Quick map:
 
 ---
 
-## Adding Images
+## Adding Images & Files
 
 ### Profile photo
-1. Place your photo at **`public/assets/profile.jpg`**
-2. Recommended: square crop, ≥ 400 × 400 px
+1. Replace **`public/assets/profile.jpg`** with your own photo
+2. Recommended: square crop, ≥ 640 × 640 px
 3. A gradient fallback shows automatically if the file is missing
+
+### Company / school logos (Experience & Education)
+1. Drop a PNG or SVG into **`public/assets/`** (e.g. `vertiv-logo.png`)
+2. In `Experience.tsx` or `Education.tsx`, set `logo: '/assets/vertiv-logo.png'` on the entry
+3. If `logo` is omitted the first letter of the name is shown instead
 
 ### Project screenshots
 1. Place screenshots in **`public/projects/`**
 2. Filename must match the `image` field in `src/data/projects.ts`
-   e.g. `image: '/projects/ecommerce.png'` → `public/projects/ecommerce.png`
+   e.g. `image: '/projects/myapp.png'` → `public/projects/myapp.png`
 3. Recommended size: 1200 × 630 px
 
 ### Resume
-- Place your PDF at **`public/resume.pdf`** — the "Download Resume" button links here.
+- Replace **`public/resume.pdf`** with your file — the resume button in About links here.
 
 ---
 
 ## Theming
 
-All design tokens are in `src/index.css` inside the `@theme {}` block.
+All design tokens live in `src/index.css` inside the `@theme {}` block. The `[data-theme="light"]` block immediately below overrides those tokens for light mode. Dark / light preference is persisted to `localStorage`.
+
 Change the accent color once to repaint the entire site:
 
 ```css
@@ -105,23 +130,25 @@ Change the accent color once to repaint the entire site:
 ```
 src/
   components/
-    Navbar.tsx          # Fixed nav · scrollspy highlighting · hamburger menu
+    Navbar.tsx          # Fixed nav · scrollspy highlighting · theme toggle · hamburger
+    StarField.tsx       # Reusable animated star background (seed prop for unique patterns)
   sections/
     Intro.tsx           # Hero · gradient name · CTA buttons · social icons
-    About.tsx           # Two-column · photo · bio · highlights · resume link
-    Timeline.tsx        # Vertical timeline · education + experience cards
+    About.tsx           # Two-column · photo · bio · social buttons     ← edit bio here
+    Experience.tsx      # Work experience cards (WORK_ENTRIES array)   ← edit jobs here
+    Education.tsx       # Education cards (EDU_ENTRIES array)          ← edit school here
     TechStack.tsx       # Categorized skill pill grid
     Projects.tsx        # Filterable project cards (web / ml / tools)
     Contact.tsx         # Contact info · mailto form · footer
   data/
     projects.ts         # ← Edit projects here
     techStack.ts        # ← Edit skills here
-  App.tsx               # Root: IntersectionObserver scrollspy + layout
+  App.tsx               # Root: IntersectionObserver scrollspy + theme state + layout
   main.tsx              # React DOM entry
-  index.css             # TailwindCSS 4 @theme tokens + base styles
+  index.css             # TailwindCSS 4 @theme tokens · light mode overrides · animations
 public/
-  assets/               # profile.jpg
-  projects/             # project screenshots
+  assets/               # profile.jpg · company/school logos
+  projects/             # project screenshots (1200×630 recommended)
   resume.pdf            # downloadable resume
 index.html              # HTML shell + SEO meta tags
 vite.config.ts          # Vite + TailwindCSS vite plugin

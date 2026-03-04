@@ -27,12 +27,61 @@
   --color-success: #10b981;
   --color-error:   #f87171;
 
+  /* Theme-sensitive tokens */
+  --color-star:            #ffffff;
+  --color-input-bg:        rgba(6,9,15,0.75);
+  --color-nav-bg-scrolled: rgba(6,9,15,0.82);
+  --color-nav-drawer-bg:   rgba(11,18,32,0.92);
+
   /* Typography */
   --font-display: 'Raleway', ui-sans-serif, system-ui, sans-serif;
   --font-sans:    'Nunito', ui-sans-serif, system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;
 }
 
+
+/* Hero name gradient + intro accent colors (overridden in light mode) */
+:root {
+  --gradient-hero:           linear-gradient(135deg, #3df0c2 0%, #38bdf8 45%, #8b5cf6 100%);
+  --color-intro-greeting:    rgba(61,240,194,0.72);
+  --color-ghost-btn:         #3df0c2;
+  --color-ghost-btn-border:  rgba(61,240,194,0.35);
+  --color-ghost-btn-hover-bg: rgba(61,240,194,0.07);
+}
+
+/* ── Light mode overrides ───────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --color-bg-primary:          #dde6f4;
+  --color-bg-secondary:        #d3ddf0;
+  --color-bg-tertiary:         #c0cedf;
+  --color-text-primary:        #0a0f1a;
+  --color-text-secondary:      #1e3a52;
+  --color-text-muted:          #3a5570;
+  --color-star:                #0d1e33;
+  --color-input-bg:            rgba(255,255,255,0.88);
+  --color-nav-bg-scrolled:     rgba(221,230,244,0.92);
+  --color-nav-drawer-bg:       rgba(211,221,240,0.97);
+  /* hero accents — dark jewel tones for contrast on light bg */
+  --gradient-hero:             linear-gradient(135deg, #065f46 0%, #1e3a8a 45%, #4c1d95 100%);
+  --color-intro-greeting:      #065f46;
+  --color-ghost-btn:           #065f46;
+  --color-ghost-btn-border:    rgba(6,95,70,0.5);
+  --color-ghost-btn-hover-bg:  rgba(6,95,70,0.07);
+  --star-opacity-max:          0.65;
+  --star-opacity-min:          0.22;
+}
+
+[data-theme="light"] .glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+/* Aurora bands — softer on light background */
+[data-theme="light"] .aurora-band-1 { opacity: 0.30; }
+[data-theme="light"] .aurora-band-2 { opacity: 0.24; }
+[data-theme="light"] .aurora-band-3 { opacity: 0.20; }
+[data-theme="light"] .aurora-intense .aurora-band-1 { opacity: 0.42; }
+[data-theme="light"] .aurora-intense .aurora-band-2 { opacity: 0.34; }
+[data-theme="light"] .aurora-intense .aurora-band-3 { opacity: 0.28; }
 
 /* ── Base resets ────────────────────────────────────────────────────────────── */
 *,
@@ -250,6 +299,29 @@ section[id] {
 /* Mint glow utility */
 .glow-mint {
   box-shadow: 0 0 16px rgba(61, 240, 194, 0.35), 0 0 4px rgba(61, 240, 194, 0.2);
+}
+
+/* Hero name gradient text — class-based so background-clip: text works reliably */
+.hero-name {
+  background: linear-gradient(135deg, #3df0c2 0%, #38bdf8 45%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="light"] .hero-name {
+  background: linear-gradient(135deg, #0f9669 0%, #2563eb 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Stars — bigger in light mode so they pop against the lighter background */
+[data-theme="light"] .star-dot {
+  transform: scale(1.75);
+}
+
+/* About socials — mint (GitHub) icon needs darkening in light mode only */
+[data-theme="light"] .about-socials > a:first-child svg {
+  filter: brightness(0.5);
 }
 
 /* Display font utility */

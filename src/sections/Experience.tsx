@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import StarField from '../components/StarField'
 
 const spring = { type: 'spring' as const, stiffness: 220, damping: 22 }
 
@@ -13,24 +14,58 @@ interface WorkEntry {
   logo?: string  // URL to company logo image — falls back to first letter
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  HOW TO EDIT EXPERIENCE ENTRIES
+//
+//  Add, remove, or reorder objects in the array below.
+//  Fields:
+//    id          — unique string (e.g. 'work-5'); used as React key
+//    company     — full company name shown as the card title
+//    title       — your job title / role
+//    period      — display string for dates (e.g. 'June 2024 – Aug 2024')
+//    location    — city, state
+//    description — 1–3 sentence summary of what you did
+//    logo        — (optional) path to company logo image
+//                  · Drop a PNG/SVG into public/assets/ and set:
+//                    logo: '/assets/company-logo.png'
+//                  · If omitted, the first letter of `company` is shown instead
+// ─────────────────────────────────────────────────────────────────────────────
 const WORK_ENTRIES: WorkEntry[] = [
   {
     id: 'work-1',
-    company: 'Acme Corp',
-    title: 'Software Engineer II',
-    period: 'Oct 2022 – Present',
-    location: 'San Francisco, CA',
+    company: 'Vertiv',
+    title: 'Software Engineer Intern',
+    period: 'Incoming May 2026',
+    location: 'Westerville, OH',
     description:
-      'Led migration of legacy monolith to microservices, reducing p99 latency by 40%. Owned the checkout redesign project, increasing conversion rate by 12%. Mentored 3 junior engineers through bi-weekly 1:1s and code reviews. Introduced E2E testing with Playwright, cutting production bugs by 60%.',
+      'Incomign SWE Intern at Vertiv for Summer 2026',
   },
   {
     id: 'work-2',
-    company: 'Startup Inc.',
-    title: 'Frontend Engineer Intern',
-    period: 'May 2021 – Aug 2021',
-    location: 'New York, NY',
+    company: 'Translational Data Analytics Institute (TDAI)',
+    title: 'AI Research Assistant',
+    period: 'September 2025 – Present',
+    location: 'Columbus, OH',
     description:
-      'Rebuilt the company dashboard in React, improving load time by 2×. Collaborated with design team to implement a new component library. Shipped 3 user-facing features within the first 4 weeks.',
+      'Designed and built UI via TAPIS to serve as a hub for ML teams on multi-model testing, dataset labeling, and IAM/Auth configurations for teams and users',
+  },
+  {
+    id: 'work-3',
+    company: 'The Ohio State University - Computer Science Department',
+    title: 'Undergraduate Teaching Assistant',
+    period: 'August 2025 – Present',
+    location: 'Columbus, OH',
+    description:
+      'Teaching assistant for CSE 2321: Foundations 1 - Data structures, algorithms, and discrete mathematics course in computer science',
+  },
+  {
+    id: 'work-4',
+    company: 'Wichita Area Metropolitan Planning Organization (WAMPO)',
+    title: 'Software Engineer Intern',
+    period: 'May 2025 – July 2025',
+    location: 'Wichita, KS',
+    description:
+      'Automating a data pipeline to analyze/output traffic data from road-intersection sensors charted on internal dashboards',
   },
 ]
 
@@ -68,8 +103,7 @@ function ExperienceItem({ entry, index }: { entry: WorkEntry; index: number }) {
       initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ ...spring, delay: index * 0.1 }}
-      className="py-6"
-      style={index > 0 ? { borderTop: '1px solid rgba(61,240,194,0.08)' } : {}}
+      className="glass-panel iridescent-border rounded-xl p-6"
     >
       <div className="flex items-start gap-4">
         <LogoBox company={entry.company} logo={entry.logo} />
@@ -78,13 +112,13 @@ function ExperienceItem({ entry, index }: { entry: WorkEntry; index: number }) {
           {/* Company + date row */}
           <div className="flex items-start justify-between gap-4 mb-0.5">
             <h3
-              className="font-semibold text-base leading-tight"
+              className="font-semibold text-lg leading-tight"
               style={{ color: 'var(--color-text-primary)' }}
             >
               {entry.company}
             </h3>
             <span
-              className="font-mono text-xs shrink-0 mt-0.5"
+              className="font-mono text-sm shrink-0 mt-0.5"
               style={{ color: 'var(--color-text-muted)' }}
             >
               {entry.period}
@@ -92,14 +126,14 @@ function ExperienceItem({ entry, index }: { entry: WorkEntry; index: number }) {
           </div>
 
           {/* Title */}
-          <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
+          <p className="text-base mb-3" style={{ color: 'var(--color-text-secondary)' }}>
             {entry.title}
           </p>
 
           {/* Description */}
           <p
-            className="text-sm leading-relaxed"
-            style={{ color: 'var(--color-text-muted)' }}
+            className="text-base leading-relaxed"
+            style={{ color: 'var(--color-text-secondary)' }}
           >
             {entry.description}
           </p>
@@ -113,8 +147,9 @@ export default function Experience() {
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.06 })
 
   return (
-    <section id="experience" ref={ref} aria-labelledby="experience-heading" className="py-24 px-6">
-      <div className="max-w-3xl mx-auto">
+    <section id="experience" ref={ref} aria-labelledby="experience-heading" className="relative py-24 px-6 overflow-hidden">
+      <StarField count={200} seed={1} />
+      <div className="relative z-10 max-w-4xl mx-auto">
 
         {/* Heading — left-aligned */}
         <motion.div
@@ -143,7 +178,7 @@ export default function Experience() {
         </motion.div>
 
         {/* Entry list */}
-        <div>
+        <div className="space-y-6">
           {WORK_ENTRIES.map((entry, index) => (
             <ExperienceItem key={entry.id} entry={entry} index={index} />
           ))}

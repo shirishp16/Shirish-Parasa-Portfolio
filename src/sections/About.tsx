@@ -1,10 +1,30 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Github, Linkedin, FileText } from 'lucide-react'
+import StarField from '../components/StarField'
 
 // Shared spring preset
 const spring = { type: 'spring' as const, stiffness: 220, damping: 22 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  HOW TO CUSTOMIZE THE ABOUT SECTION
+//
+//  Profile photo:
+//    · Replace public/assets/profile.jpg with your own photo (any aspect ratio
+//      works; the image is cropped to a square via object-cover)
+//    · Keep the filename profile.jpg, OR update the src prop on the <img> below
+//
+//  Bio text:
+//    · Edit the two paragraph strings inside the .map() call below (~line 92)
+//    · You can add a third paragraph by pushing another <> ... </> element
+//
+//  Social / link buttons (GitHub, LinkedIn, Resume):
+//    · Find the array near the bottom of this component (~line 123)
+//    · Update the `href` values with your real URLs
+//    · Resume: replace public/resume.pdf with your file and keep href: '/resume.pdf'
+//    · To add a new link, add an object: { Icon, href, label, color, tint, glow }
+//      Import the icon from lucide-react (https://lucide.dev/icons)
+// ─────────────────────────────────────────────────────────────────────────────
 export default function About() {
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.08 })
 
@@ -13,9 +33,11 @@ export default function About() {
       id="about"
       ref={ref}
       aria-labelledby="about-heading"
-      className="py-24 px-6 bg-[var(--color-bg-secondary)]"
+      className="relative py-24 px-6 overflow-hidden"
+      style={{ background: 'radial-gradient(ellipse 70% 45% at 90% 8%, rgba(139,92,246,0.07), transparent), var(--color-bg-secondary)' }}
     >
-      <div className="max-w-5xl mx-auto">
+      <StarField count={140} seed={4} />
+      <div className="relative z-10 max-w-6xl mx-auto">
 
         {/* Section heading — clip-path wipe + y spring */}
         <motion.div
@@ -115,12 +137,12 @@ export default function About() {
               initial={{ opacity: 0, y: 24 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...spring, delay: 0.48 }}
-              className="flex items-center gap-5 mt-6"
+              className="about-socials flex items-center gap-3 mt-6"
             >
               {[
-                { Icon: Github,   href: 'https://github.com/shirishp16',                     label: 'GitHub',   color: '#3df0c2', tint: 'rgba(61,240,194,0.1)',   glow: 'rgba(61,240,194,0.35)'  },
-                { Icon: Linkedin, href: 'https://linkedin.com/in/shirish-parasa-537266362',   label: 'LinkedIn', color: '#8b5cf6', tint: 'rgba(139,92,246,0.12)',  glow: 'rgba(139,92,246,0.35)' },
-                { Icon: FileText, href: '/resume.pdf',                                        label: 'Resume',   color: '#38bdf8', tint: 'rgba(56,189,248,0.1)',   glow: 'rgba(56,189,248,0.35)'  },
+                { Icon: Github,   href: 'https://github.com/shirishp16',                   label: 'GitHub',   color: '#3df0c2', tint: 'rgba(61,240,194,0.1)',  glow: 'rgba(61,240,194,0.4)'  },
+                { Icon: Linkedin, href: 'https://linkedin.com/in/shirish-parasa-537266362', label: 'LinkedIn', color: '#8b5cf6', tint: 'rgba(139,92,246,0.1)', glow: 'rgba(139,92,246,0.4)' },
+                { Icon: FileText, href: '/resume.pdf',                                      label: 'Resume',   color: '#38bdf8', tint: 'rgba(56,189,248,0.1)',  glow: 'rgba(56,189,248,0.4)'  },
               ].map(({ Icon, href, label, color, tint, glow }) => (
                 <motion.a
                   key={label}
@@ -128,15 +150,14 @@ export default function About() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  whileHover={{ scale: 1.12, transition: { duration: 0.12 } }}
-                  whileTap={{ scale: 0.95 }}
-                  className="glass-panel iridescent-border flex flex-col items-center justify-center gap-2 w-20 h-20 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] transition-shadow duration-200"
+                  whileHover={{ scale: 1.15, transition: { duration: 0.12 } }}
+                  whileTap={{ scale: 0.92 }}
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] transition-shadow duration-200"
                   style={{ background: tint }}
-                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 24px ${glow}` }}
+                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 20px ${glow}` }}
                   onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}
                 >
-                  <Icon size={26} style={{ color }} />
-                  <span className="text-xs font-semibold" style={{ color }}>{label}</span>
+                  <Icon size={20} style={{ color }} />
                 </motion.a>
               ))}
             </motion.div>

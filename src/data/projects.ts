@@ -1,7 +1,22 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Projects Data  ·  src/data/projects.ts
 //  Edit this file to update the Projects section.
-//  Images → public/projects/<filename>.png  (recommended: 1200 × 630)
+//
+//  FIELDS:
+//    id            — unique string, e.g. 'proj-5'
+//    title         — project name
+//    description   — 2–4 sentence summary (shown on the card)
+//    image         — path relative to /public (e.g. '/projects/myapp.png')
+//                    · Recommended size: 1200 × 630 px
+//                    · Drop the file into public/projects/ and update this path
+//                    · If no image, the card shows a gradient placeholder
+//    imageAlt      — screen-reader alt text for the screenshot
+//    tech          — string[] of badge labels (languages, frameworks, tools)
+//    category      — 'web' | 'ml' | 'tools'  (used by filter tabs)
+//    githubUrl     — (optional) link to the GitHub repo
+//    demoVideoUrl  — (optional) YouTube / Loom URL for a demo video
+//    liveUrl       — (optional) link to the deployed / live site
+//    featured      — set true to pin the card at the top / highlight it
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type ProjectCategory = 'web' | 'ml' | 'tools'

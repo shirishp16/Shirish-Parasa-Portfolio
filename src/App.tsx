@@ -13,6 +13,16 @@ const SECTION_IDS = ['intro', 'about', 'experience', 'education', 'techstack', '
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>('intro')
+  const [theme, setTheme] = useState<'dark' | 'light'>(
+    () => (localStorage.getItem('theme') as 'dark' | 'light') ?? 'dark',
+  )
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
 
   // ── Scrollspy via IntersectionObserver ─────────────────────────────────────
   // rootMargin '-40% 0px -50% 0px' means a section becomes "active" when its
@@ -50,7 +60,7 @@ export default function App() {
         Skip to content
       </a>
 
-      <Navbar activeSection={activeSection} />
+      <Navbar activeSection={activeSection} theme={theme} onToggleTheme={toggleTheme} />
 
       <main id="main-content">
         <Intro      />
