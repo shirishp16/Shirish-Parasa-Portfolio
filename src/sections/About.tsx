@@ -11,7 +11,7 @@ const spring = { type: 'spring' as const, stiffness: 220, damping: 22 }
 //
 //  Profile photo:
 //    · Replace public/assets/profile.jpg with your own photo (any aspect ratio
-//      works; the image is cropped to a square via object-cover)
+//      works; the image is cropped to a circle via object-cover + rounded-full)
 //    · Keep the filename profile.jpg, OR update the src prop on the <img> below
 //
 //  Bio text:
@@ -67,22 +67,22 @@ export default function About() {
           />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
 
           {/* ── Left: photo — scale + rotate spring entrance ─── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.82, rotate: -5, x: -30 }}
             animate={inView ? { opacity: 1, scale: 1, rotate: 0, x: 0 } : {}}
             transition={{ ...spring, delay: 0.1 }}
-            className="flex justify-center"
+            className="flex justify-center pt-8"
           >
-            <div className="relative iridescent-border rounded-2xl">
+            <div className="relative iridescent-border rounded-full">
               <img
-                src="/assets/profile.jpg"
+                src="public/assets/profile.jpg"
                 alt="Shirish Parasa — profile photo"
-                width={360}
-                height={360}
-                className="rounded-2xl w-72 h-72 md:w-80 md:h-80 object-cover shadow-xl block"
+                width={384}
+                height={384}
+                className="rounded-full w-80 h-80 md:w-96 md:h-96 object-cover shadow-xl block"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                   const fb = e.currentTarget.nextElementSibling as HTMLElement | null
@@ -92,7 +92,7 @@ export default function About() {
               <div
                 hidden
                 aria-hidden="true"
-                className="rounded-2xl w-72 h-72 md:w-80 md:h-80 flex items-center justify-center shadow-xl"
+                className="rounded-full w-80 h-80 md:w-96 md:h-96 flex items-center justify-center shadow-xl"
                 style={{
                   background: 'linear-gradient(135deg, rgba(61,240,194,0.15), rgba(139,92,246,0.12), rgba(56,189,248,0.1))',
                 }}
@@ -109,17 +109,18 @@ export default function About() {
             {/* Overflow-clip each paragraph for a clean wipe-up reveal */}
             {[
               <>
-                Hi! I'm{' '}
+                Hi there! I'm{' '}
                 <strong className="text-[var(--color-text-primary)] font-semibold">Shirish Parasa</strong>,
-                a passionate software engineer with 3+ years of experience building full-stack web
-                applications. I love turning complex problems into simple, elegant solutions that
-                make a real impact for users.
+                a junior at The Ohio State University majoring in Information Security, minoring in Computer Information Science and Statistics. 
+                I'm passionate about creating innovative solutions to real-world problems, and I'm always looking for new opportunities to learn and grow.
               </>,
               <>
-                My journey in tech started when I wrote my first "Hello, World!" in a college dorm
-                room and never looked back. Today I specialize in React, TypeScript, and cloud-native
-                backend systems — always chasing the intersection of great UX and solid engineering.
-                Outside of work I enjoy open-source contributions and the occasional hiking trail.
+                I have hands-on experience with a multitude of technologies, specializing in Python, Java, SQL, React, TypeScript, and ML frameworks like TensorFlow and PyTorch. 
+                Throughout my career and academic journey, I've worked on backend systems, full-stack web applications, implemented security solutions, and trained machine learning models to improve accuracy in real-world applications. 
+              </>,
+              <>
+                When I'm not coding, you can find me dancing with my team, OSU Origins, cooking delicious meals, weightlifting, gaming, bird-watching, or spending time with my wonderful friends and family. 
+                I am committed to building applications that make a positive impact and transform lives, starting with my community and those around me.
               </>,
             ].map((text, i) => (
               <motion.p
