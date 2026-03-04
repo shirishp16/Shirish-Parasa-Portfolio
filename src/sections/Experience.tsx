@@ -39,6 +39,7 @@ const WORK_ENTRIES: WorkEntry[] = [
     location: 'Westerville, OH',
     description:
       'Incomign SWE Intern at Vertiv for Summer 2026',
+    logo: 'public/assets/vertiv-logo.png',
   },
   {
     id: 'work-2',
@@ -48,6 +49,7 @@ const WORK_ENTRIES: WorkEntry[] = [
     location: 'Columbus, OH',
     description:
       'Designed and built UI via TAPIS to serve as a hub for ML teams on multi-model testing, dataset labeling, and IAM/Auth configurations for teams and users',
+    logo: 'public/assets/tdai-logo.png',
   },
   {
     id: 'work-3',
@@ -57,6 +59,7 @@ const WORK_ENTRIES: WorkEntry[] = [
     location: 'Columbus, OH',
     description:
       'Teaching assistant for CSE 2321: Foundations 1 - Data structures, algorithms, and discrete mathematics course in computer science',
+    logo: 'public/assets/cse-logo.png',
   },
   {
     id: 'work-4',
@@ -66,6 +69,7 @@ const WORK_ENTRIES: WorkEntry[] = [
     location: 'Wichita, KS',
     description:
       'Automating a data pipeline to analyze/output traffic data from road-intersection sensors charted on internal dashboards',
+    logo: 'public/assets/wampo-logo.png',
   },
 ]
 

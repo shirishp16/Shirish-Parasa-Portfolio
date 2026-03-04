@@ -41,12 +41,18 @@ const EDU_ENTRIES: EduEntry[] = [
     period: 'May 2027',
     location: 'Columbus, OH',
     coursework: [
-      'Data Structures & Algorithms',
+      'Object-Oriented Programming', 
+      'Software Development and Design', 
+      'Data Structures and Algorithms',
       'Operating Systems',
-      'Databases & Computer Networks',
-      'Software Engineering',
-      'Statistics & Probability',
+      'Linear Algebra',
+      'Statistical Modeling',
+      'Database Systems',
+      'Information Security',
+      'Network Security',
+      'Artificial Intelligence',
     ],
+    logo: 'public/assets/osu-logo.png',
   },
 ]
 
