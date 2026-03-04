@@ -78,21 +78,15 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
     >
       {/* ── LEFT: project image ── */}
       <div
-        className="md:w-2/5 shrink-0 h-64 md:h-auto md:min-h-[240px] relative overflow-hidden"
+        className="md:w-1/3 shrink-0 h-44 md:h-auto md:min-h-[176px] relative overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${fb.bg} 0%, rgba(11,18,32,1) 100%)` }}
       >
         <img
           src={project.image}
           alt={project.imageAlt}
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          className="w-full h-full object-contain transition-transform duration-500 hover:scale-105"
           loading="lazy"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
-        />
-        {/* Category tint overlay — always present, adds depth even when image loads */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: `linear-gradient(to right, transparent 60%, rgba(11,18,32,0.35))` }}
         />
       </div>
 
